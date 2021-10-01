@@ -1,0 +1,14 @@
+{
+  "name": "jison",
+  "version": "0.1.0",
+  "description": "Compi1_proyecto2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "compiler"
+  ],
+  "author": "EduardoFlores",
+  "license": "ISC"
+}
