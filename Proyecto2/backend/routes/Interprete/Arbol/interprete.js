@@ -1,10 +1,11 @@
 let TipoInstruccion = require('./Tipos/tipo-instruccion').TipoInstruccion;
 let ejecutarImprimir = require('./Instrucciones/imprimir').ejecutarImprimir;
 
-let salida = '';
-let ts = [];
+
 
 function ejecutar(instrucciones){
+    let salida = '';
+    let ts = [];
     //console.log("entro a ejecutar");
     //console.log(instrucciones);
     

@@ -1,6 +1,7 @@
 let TipoOperacion = require('../Tipos/tipo-operacion').TipoOperacion;
 let TipoDato = require('../Tipos/tipo-dato').TipoDato;
 let TipoValor = require('../Tipos/tipo-valor').TipoValor;
+let errorSemantico = require('../Operaciones/error-semantico').errorSemantico;
 
 function procesarExpresion(expresion, ts)
 {
@@ -8,7 +9,6 @@ function procesarExpresion(expresion, ts)
     //console.log(expresion.tipo);
     switch(expresion.tipo){
         case TipoOperacion.Suma:
-            console.log(expresion);
             let valorIzq = procesarExpresion(expresion.operandoIzquierdo, ts);
             let valorDer = procesarExpresion(expresion.operandoDerecho, ts);
             let resultado = procesarSuma(valorIzq, valorDer);
@@ -21,11 +21,11 @@ function procesarExpresion(expresion, ts)
         case TipoOperacion.Multiplicacion:
             break;
         case TipoValor.Booleano:
-            break;
+            return { tipo: TipoDato.Booleano, valor: expresion.valor}
         case TipoValor.Cadena:
-            break;
+            return { tipo: TipoDato.Cadena, valor: expresion.valor}
         case TipoValor.Caracter:
-            break;
+            return { tipo: TipoDato.Caracter, valor: expresion.valor}
         case TipoValor.Decimal:
             return { tipo: TipoDato.Decimal, valor: expresion.valor}
         case TipoValor.Identificador:
@@ -45,30 +45,61 @@ function procesarSuma(valorIzq, valorDer){
             switch(valorDer.tipo){
                 case TipoDato.Booleano:
                     // Operacion No realizable, error semantico
-                break;
+                    //ErrorSemantico("Error Semantico", "Imposible realizar operacion", undefined, undefined);
+                    return{
+                        tipo: "Error Semantico",
+                        mensaje: "imposible realizar operacion"
+                    }
                 case TipoDato.Cadena:
+                    return {
+                        tipo: TipoDato.Cadena,
+                        valor: String(valorIzq.valor) + String(valorDer.valor)
+                    }
                 break;
                 case TipoDato.Caracter:
                     // Operacion No realizable, error semantico
                 break;
                 case TipoDato.Decimal:
-                break;
+                    let _valorIzquierdo2 = valorIzq.valor.toUpperCase() == "TRUE" ? 1 : 0 ;
+                    return {
+                        tipo: TipoDato.Decimal,
+                        valor: _valorIzquierdo2 + valorDer.valor
+                    }
                 case TipoDato.Numero:
-                break;
+                    let _valorIzquierdo = valorIzq.valor.toUpperCase() == "TRUE" ? 1 : 0 ;
+                    return {
+                        tipo: TipoDato.Numero,
+                        valor: _valorIzquierdo + valorDer.valor
+                    }
             }
         break;
         case TipoDato.Cadena:
             switch(valorDer.tipo){
                 case TipoDato.Booleano:
-                break;
+                    return {
+                        tipo: TipoDato.Cadena,
+                        valor: String(valorIzq.valor) + String(valorDer.valor)
+                    }
                 case TipoDato.Cadena:
-                break;
+                    return {
+                        tipo: TipoDato.Cadena,
+                        valor: String(valorIzq.valor) + String(valorDer.valor)
+                    }
                 case TipoDato.Caracter:
-                break;
+                    return {
+                        tipo: TipoDato.Cadena,
+                        valor: String(valorIzq.valor) + String(valorDer.valor)
+                    }
                 case TipoDato.Decimal:
-                break;
+                    return {
+                        tipo: TipoDato.Cadena,
+                        valor: String(valorIzq.valor) + String(valorDer.valor)
+                    }
                 case TipoDato.Numero:
-                break;
+                    return {
+                        tipo: TipoDato.Cadena,
+                        valor: String(valorIzq.valor) + String(valorDer.valor)
+                    }
             }
             break;
         case TipoDato.Caracter:
@@ -77,19 +108,31 @@ function procesarSuma(valorIzq, valorDer){
                     // Operacion No realizable, error semantico
                 break;
                 case TipoDato.Cadena:
-                break;
+                    return {
+                        tipo: TipoDato.Cadena,
+                        valor: String(valorIzq.valor) + String(valorDer.valor)
+                    }
                 case TipoDato.Caracter:
-                break;
+                    return {
+                        tipo: TipoDato.Cadena,
+                        valor: String(valorIzq.valor) + String(valorDer.valor)
+                    }
                 case TipoDato.Decimal:
-                break;
+                    return {
+                        tipo: TipoDato.Decimal,
+                        valor: getValueByCaracter(valorIzq.valor) + valorDer.valor
+                    }
                 case TipoDato.Numero:
-                break;
+                    return {
+                        tipo: TipoDato.Numero,
+                        valor: getValueByCaracter(valorIzq.valor) + valorDer.valor
+                    }
             }
             break;
         case TipoDato.Decimal:
             switch(valorDer.tipo){
                 case TipoDato.Booleano:
-                    let _valorDerecho = valorDer.toUpperCase() == "TRUE" ? 1 : 0 ;
+                    let _valorDerecho = valorDer.valor.toUpperCase() == "TRUE" ? 1 : 0 ;
                     return {
                         tipo: TipoDato.Decimal,
                         valor: valorIzq.valor + _valorDerecho
@@ -100,26 +143,47 @@ function procesarSuma(valorIzq, valorDer){
                         valor: String(valorIzq.valor) + String(valorDer.valor)
                     }
                 case TipoDato.Caracter:
-                break;
+                    return {
+                        tipo: TipoDato.Decimal,
+                        valor: valorIzq.valor + getValueByCaracter(valorDer.valor)
+                    }
                 case TipoDato.Decimal:
                     return {
                         tipo: TipoDato.Decimal,
                         valor: valorIzq.valor + valorDer.valor
                     }
                 case TipoDato.Numero:
-                break;
+                    return {
+                        tipo: TipoDato.Decimal,
+                        valor: valorIzq.valor + valorDer.valor
+                    }
             }
             break;
         case TipoDato.Numero:
             switch(valorDer.tipo){
                 case TipoDato.Booleano:
-                    break;
+                    let _valorDerecho = valorDer.valor.toUpperCase();
+                    console.log(_valorDerecho);
+                    _valorDerecho = _valorDerecho == "TRUE" ? 1 : 0 ;
+                    return {
+                        tipo: TipoDato.Numero,
+                        valor: valorIzq.valor + _valorDerecho
+                    }
                 case TipoDato.Cadena:
-                    break;
+                    return {
+                        tipo: TipoDato.Cadena,
+                        valor: String(valorIzq.valor) + String(valorDer.valor)
+                    }
                 case TipoDato.Caracter:
-                    break;
+                    return {
+                        tipo: TipoDato.Numero,
+                        valor: valorIzq.valor + getValueByCaracter(valorDer.valor)
+                    }
                 case TipoDato.Decimal:
-                    break;
+                    return {
+                        tipo: TipoDato.Decimal,
+                        valor: valorIzq.valor + valorDer.valor
+                    }
                 case TipoDato.Numero:
                     return {
                         tipo: TipoDato.Numero,
@@ -128,6 +192,11 @@ function procesarSuma(valorIzq, valorDer){
             }
             break;
     }
+}
+
+function getValueByCaracter(caracter)
+{
+    return caracter.charCodeAt(0);
 }
 
 module.exports.procesarExpresion = procesarExpresion;

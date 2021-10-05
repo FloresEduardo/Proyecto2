@@ -74,11 +74,14 @@
 ","     return 'tkComa';
 "."     return 'tkPunto';
 
+
 \"[^\"]*\"                      { yytext = yytext.substr(1, yyleng-2); return 'tkCadena'; }
 \'[^\']?\'                      { yytext = yytext.substr(1, yyleng-2); return 'tkCaracter'; }
-[0-9]+                          return 'tkNumero';
-[0-9]+("."[0-9]+)?\b            return 'tkDecimal';
+[0-9]+("."[0-9]+)\b            return 'tkDecimal';
+[0-9]+\b                        return 'tkNumero';
 ([a-zA-Z])([a-zA-Z0-9_])*       return 'tkId';
+
+
 
 <<EOF>>     return 'EOF';
 .           {console.log('Error Lexico: '+yytext+' en la linea' + yylloc.first_line + ' en la columna '+yylloc.first_column); }
@@ -209,9 +212,9 @@ EXP
         | tkMenos EXP %prec UMENOS
         | tkNumero                      { $$ = Instrucciones.nuevoValor(TipoValor.Numero, Number($1)); }
         | tkDecimal                     { $$ = Instrucciones.nuevoValor(TipoValor.Decimal, Number($1)); }
-        | tkCadena
-        | tkCaracter
-        | tkTrue
-        | tkFalse
+        | tkCadena                      { $$ = Instrucciones.nuevoValor(TipoValor.Cadena, $1); }
+        | tkCaracter                    { $$ = Instrucciones.nuevoValor(TipoValor.Caracter, $1); }
+        | tkTrue                        { $$ = Instrucciones.nuevoValor(TipoValor.Booleano, $1); }
+        | tkFalse                       { $$ = Instrucciones.nuevoValor(TipoValor.Booleano, $1); }
         | tkParentesisA EXP tkParentesisC
         | LLAMADA;
