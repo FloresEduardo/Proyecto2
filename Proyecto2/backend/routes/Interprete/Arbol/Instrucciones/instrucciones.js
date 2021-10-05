@@ -2,14 +2,12 @@ let TipoInstruccion = require('../Tipos/tipo-instruccion').TipoInstruccion;
 
 let Instrucciones = {
     // num + num
-    operacionBinaria: (tipo, operandoIzquierdo, operandoDerecho, linea, columna) => {
+    operacionBinaria: (tipo, operandoIzquierdo, operandoDerecho) => {
         return{
             tipo: tipo,
             operandoIzquierdo: operandoIzquierdo,
             operandoDerecho: operandoDerecho,
-            error: undefined,
-            linea: linea,
-            columna: columna
+            error: undefined
         }
     },
 

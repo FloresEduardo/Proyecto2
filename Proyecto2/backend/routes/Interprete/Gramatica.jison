@@ -5,82 +5,82 @@
 %%
 
 
-\\n 												   // salto de linea
-\s+													  // espacios en blanco
-"//".*												 // Comentario unilinea
-[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]					// Comentario multilinea
+\\n                                                    // salto de linea
+\s+                                                   // espacios en blanco
+"//".*                                               // Comentario unilinea
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]                 // Comentario multilinea
 
-\"[^\"]*\"                  	{ yytext = yytext.substr(1, yyleng-2); return 'tkCadena'; }
-\'[^\']?\'                  	{ yytext = yytext.substr(1, yyleng-2); return 'tkCaracter'; }
-[0-9]+               			return 'tkNumero';
+"int"                   return 'tkInt';
+"double"                return 'tkDouble';
+"boolean"               return 'tkBoolean';
+"string"                return 'tkString';
+"char"                  return 'tkChar';
+"new"                   return 'tkNew';
+"DynamicLis"            return 'tkDynamicList';
+"append"                return 'tkAppend';
+"getValue"              return 'tkGetValue';
+"setValue"              return 'tkSetValue';
+"if"                    return 'tkIf';
+"else"                  return 'tkElse';
+"WriteLine"             return 'tkWriteLine';
+"switch"                return 'tkSwitch';
+"case"                  return 'tkCase';
+"default"               return 'tkDefault';
+"break"                 return 'tkBreak';
+"while"                 return 'tkWhile';
+"do"                    return 'tkDo';
+"for"                   return 'tkFor';
+"return"                return 'tkReturn';
+"void"                  return 'tkVoid';
+"toLower"               return 'tkToLower';
+"toUpper"               return 'tkToUpper';
+"length"                return 'tkLength';
+"truncate"              return 'tkTruncate';
+"round"                 return 'tkRound';
+"typeOf"                return 'tkTypeOf';
+"toString"              return 'tkToString';
+"toCharArray"           return 'tkToCharArray';
+"start"                 return 'tkStart';
+"with"                  return 'tkWith';
+"true"                  return 'tkTrue';
+"false"                 return 'tkFalse';
+"count"                 return 'tkCount';
+
+"<="    return 'tkMenorIgual';
+">="    return 'tkMayorIgual';
+"=="    return 'tkIgualIgual';
+"!="    return 'tkNotIgual';
+"&&"    return 'tkAnd';
+"||"    return 'tkOr';
+
+"+"     return 'tkMas';
+"-"     return 'tkMenos';
+"/"     return 'tkDivision';
+"*"     return 'tkPor';
+"%"     return 'tkPorcentaje';
+"^"     return 'tkPotencia';
+"="     return 'tkIgual';
+"!"     return 'tkNot';
+"<"     return 'tkMenor';
+">"     return 'tkMayor';
+"("     return 'tkParentesisA';
+")"     return 'tkParentesisC';
+"{"     return 'tkLlaveA';
+"}"     return 'tkLlaveC';
+"["     return 'tkCorcheteA';
+"]"     return 'tkCorcheteC';
+";"     return 'tkPuntoComa';
+":"     return 'tkDosPuntos';
+","     return 'tkComa';
+"."     return 'tkPunto';
+
+\"[^\"]*\"                      { yytext = yytext.substr(1, yyleng-2); return 'tkCadena'; }
+\'[^\']?\'                      { yytext = yytext.substr(1, yyleng-2); return 'tkCaracter'; }
+[0-9]+                          return 'tkNumero';
 [0-9]+("."[0-9]+)?\b            return 'tkDecimal';
-([a-zA-Z])([a-zA-Z0-9_])*		return 'tkId';
+([a-zA-Z])([a-zA-Z0-9_])*       return 'tkId';
 
-"int"					return 'tkInt';
-"double"				return 'tkDouble';
-"boolean"				return 'tkBoolean';
-"string"				return 'tkString';
-"char"					return 'tkChar';
-"new"					return 'tkNew';
-"DynamicLis"			return 'tkDynamicList';
-"append"				return 'tkAppend';
-"getValue"				return 'tkGetValue';
-"setValue"				return 'tkSetValue';
-"if"					return 'tkIf';
-"else"					return 'tkElse';
-"WriteLine"				return 'tkWriteLine';
-"switch"				return 'tkSwitch';
-"case"					return 'tkCase';
-"default"				return 'tkDefault';
-"break"					return 'tkBreak';
-"while"					return 'tkWhile';
-"do"					return 'tkDo';
-"for"					return 'tkFor';
-"return"				return 'tkReturn';
-"void"					return 'tkVoid';
-"toLower"				return 'tkToLower';
-"toUpper"				return 'tkToUpper';
-"length"				return 'tkLength';
-"truncate"				return 'tkTruncate';
-"round"					return 'tkRound';
-"typeOf"				return 'tkTypeOf';
-"toString"				return 'tkToString';
-"toCharArray"			return 'tkToCharArray';
-"start"					return 'tkStart';
-"with"					return 'tkWith';
-"true"					return 'tkTrue';
-"false"					return 'tkFalse';
-"count"					return 'tkCount';
-
-"<="	return 'tkMenorIgual';
-">="	return 'tkMayorIgual';
-"=="	return 'tkIgualIgual';
-"!="	return 'tkNotIgual';
-"&&"	return 'tkAnd';
-"||"	return 'tkOr';
-
-"+"		return 'tkMas';
-"-"		return 'tkMenos';
-"/"		return 'tkDivision';
-"*"		return 'tkPor';
-"%"		return 'tkPorcentaje';
-"^"		return 'tkPotencia';
-"="		return 'tkIgual';
-"!"		return 'tkNot';
-"<"		return 'tkMenor';
-">"		return 'tkMayor';
-"("		return 'tkParentesisA';
-")"		return 'tkParentesisC';
-"{"		return 'tkLlaveA';
-"}"		return 'tkLlaveC';
-"["		return 'tkCorcheteA';
-"]"		return 'tkCorcheteC';
-";"		return 'tkPuntoComa';
-":" 	return 'tkDosPuntos';
-","		return 'tkComa';
-"."		return 'tkPunto';
-
-<<EOF>>		return 'EOF';
+<<EOF>>     return 'EOF';
 .           {console.log('Error Lexico: '+yytext+' en la linea' + yylloc.first_line + ' en la columna '+yylloc.first_column); }
 
 /lex
@@ -114,10 +114,14 @@ INICIO
 CUERPO
     :     SENTS SENTS_ ;               
 
+SENTS_
+    :     SENTS SENTS_
+        | EPS;
+
 SENTS
     :     tkStart tkWith LLAMADA tkPuntoComa
-        | tkVoid tkId tkParentesisA PARAMETROS tkParentesisC tkLlaveA F_SENTS tkLlaveC;
-
+        | tkVoid tkId tkParentesisA PARAMETROS tkParentesisC tkLlaveA F_SENTS tkLlaveC
+        | IMPRIMIR { $$ = [$1];};
 
 LLAMADA
     :     tkId LLAMADA_;
@@ -163,7 +167,7 @@ F_SENT
         | IMPRIMIR          { $$ = [$1];};
 
 IMPRIMIR
-    :     tkWriteLine tkParentesisA EXP tkParentesisC      { $$ = Instrucciones.imprimir($3);};
+    :     tkWriteLine tkParentesisA EXP tkParentesisC tkPuntoComa      { $$ = Instrucciones.imprimir($3);};
 
 DECLARACIONES
     :     TIPO L_ID ASIG tkPuntoComa;
@@ -188,7 +192,7 @@ ASIG
         | EPS;
 
 EXP
-	:	  EXP tkOr EXP
+    :     EXP tkOr EXP
         | EXP tkAnd EXP
         | tkNot EXP
         | EXP tkIgualIgual EXP
@@ -197,7 +201,7 @@ EXP
         | EXP tkMenorIgual EXP
         | EXP tkMayor EXP
         | EXP tkMayorIgual EXP
-        | EXP tkMas EXP                 { $$ = Instrucciones.operacionBinaria(TipoOperacion.Suma, $1, $3, yylloc.first_line, yylloc.first_column); }
+        | EXP tkMas EXP                 { $$ = Instrucciones.operacionBinaria(TipoOperacion.Suma, $1, $3); }
         | EXP tkMenos EXP
         | EXP tkPor EXP
         | EXP tkDivision EXP

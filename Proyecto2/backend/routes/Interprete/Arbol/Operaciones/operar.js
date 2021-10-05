@@ -4,13 +4,15 @@ let TipoValor = require('../Tipos/tipo-valor').TipoValor;
 
 function procesarExpresion(expresion, ts)
 {
-    if(expresion.error){    return expresion;   }
-
+    //if(expresion.error){    return expresion;   }
+    //console.log(expresion.tipo);
     switch(expresion.tipo){
         case TipoOperacion.Suma:
-            let valorIzq = procesarExpresion(expresion.oprandoIzquierdo, ts);
-            let valorDer = procesarExpresion(expresion.oprandoDerecho, ts);
+            console.log(expresion);
+            let valorIzq = procesarExpresion(expresion.operandoIzquierdo, ts);
+            let valorDer = procesarExpresion(expresion.operandoDerecho, ts);
             let resultado = procesarSuma(valorIzq, valorDer);
+            console.log(resultado);
             return resultado;
         case TipoOperacion.Resta:
             break;
@@ -29,13 +31,15 @@ function procesarExpresion(expresion, ts)
         case TipoValor.Identificador:
             break;
         case TipoValor.Numero:
-            break;
+            return { tipo: TipoDato.Numero, valor: expresion.valor}
 
     }
 }
 
 function procesarSuma(valorIzq, valorDer){
     // Seccion de casteos
+    console.log(valorIzq);
+    console.log(valorDer);
     switch(valorIzq.tipo){
         case TipoDato.Booleano:
             switch(valorDer.tipo){
@@ -117,7 +121,10 @@ function procesarSuma(valorIzq, valorDer){
                 case TipoDato.Decimal:
                     break;
                 case TipoDato.Numero:
-                    break;
+                    return {
+                        tipo: TipoDato.Numero,
+                        valor: valorIzq.valor + valorDer.valor
+                    }
             }
             break;
     }

@@ -5,8 +5,12 @@ let salida = '';
 let ts = [];
 
 function ejecutar(instrucciones){
-    instrucciones.forEach(instruccion => {
-        switch(instrucciones.tipo)
+    //console.log("entro a ejecutar");
+    //console.log(instrucciones);
+    
+    instrucciones.forEach((instruccion) => {
+        
+        switch(instruccion.tipo)
         {
             case TipoInstruccion.Declaracion:
                 break;

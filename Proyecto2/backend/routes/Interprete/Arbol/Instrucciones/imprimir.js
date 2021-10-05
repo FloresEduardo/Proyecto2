@@ -4,7 +4,7 @@ function ejecutarImprimir(instruccion, ts)
 {
     let valor = procesarExpresion(instruccion.expresion, ts);
     let salida = valor.valor + '\n';
-    console(salida);
+    console.log(salida);
     return salida;
 }
 module.exports.ejecutarImprimir = ejecutarImprimir;
