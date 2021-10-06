@@ -21,10 +21,12 @@ let Instrucciones = {
     },
 
     // num
-    nuevoValor: (tipo, valor) => {
+    nuevoValor: (tipo, valor, linea, columna) => {
         return {
             tipo: tipo,
-            valor: valor
+            valor: valor,
+            linea: linea,
+            columna: columna
         }
     },
 

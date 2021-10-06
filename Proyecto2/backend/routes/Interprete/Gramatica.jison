@@ -77,14 +77,14 @@
 
 \"[^\"]*\"                      { yytext = yytext.substr(1, yyleng-2); return 'tkCadena'; }
 \'[^\']?\'                      { yytext = yytext.substr(1, yyleng-2); return 'tkCaracter'; }
-[0-9]+("."[0-9]+)\b            return 'tkDecimal';
+[0-9]+("."[0-9]+)\b             return 'tkDecimal';
 [0-9]+\b                        return 'tkNumero';
 ([a-zA-Z])([a-zA-Z0-9_])*       return 'tkId';
 
 
 
 <<EOF>>     return 'EOF';
-.           {console.log('Error Lexico: '+yytext+' en la linea' + yylloc.first_line + ' en la columna '+yylloc.first_column); }
+.           {console.log('Error Lexico: '+yytext+' en la linea: ' + yylloc.first_line + ' en la columna: '+yylloc.first_column); }
 
 /lex
 
@@ -115,11 +115,11 @@ INICIO
     :     CUERPO      EOF                 { console.log("Analisis Terminado"); return $1; };
 
 CUERPO
-    :     SENTS SENTS_ ;               
+    :     SENTS SENTS_              { $$ = $1.concat($2);};               
 
 SENTS_
-    :     SENTS SENTS_
-        | EPS;
+    :     SENTS SENTS_              { $$ = $1.concat($2);}
+        | EPS       {$$ = [];};
 
 SENTS
     :     tkStart tkWith LLAMADA tkPuntoComa
@@ -154,10 +154,10 @@ PARAMETROS_2_
         | EPS;
 
 F_SENTS
-    :     F_SENT F_SENT_    { $$ = [$1].concat($2);};
+    :     F_SENT F_SENT_    { $$ = $1.concat($2);};
 
 F_SENT_
-    :     F_SENT F_SENT_        { $$ = [$1].concat($2);}
+    :     F_SENT F_SENT_        { $$ = $1.concat($2);}
         | EPS   {$$ = [];};
 
 F_SENT
@@ -205,16 +205,17 @@ EXP
         | EXP tkMayor EXP
         | EXP tkMayorIgual EXP
         | EXP tkMas EXP                 { $$ = Instrucciones.operacionBinaria(TipoOperacion.Suma, $1, $3); }
-        | EXP tkMenos EXP
-        | EXP tkPor EXP
-        | EXP tkDivision EXP
-        | EXP tkPorcentaje EXP
-        | tkMenos EXP %prec UMENOS
-        | tkNumero                      { $$ = Instrucciones.nuevoValor(TipoValor.Numero, Number($1)); }
-        | tkDecimal                     { $$ = Instrucciones.nuevoValor(TipoValor.Decimal, Number($1)); }
-        | tkCadena                      { $$ = Instrucciones.nuevoValor(TipoValor.Cadena, $1); }
-        | tkCaracter                    { $$ = Instrucciones.nuevoValor(TipoValor.Caracter, $1); }
-        | tkTrue                        { $$ = Instrucciones.nuevoValor(TipoValor.Booleano, $1); }
-        | tkFalse                       { $$ = Instrucciones.nuevoValor(TipoValor.Booleano, $1); }
-        | tkParentesisA EXP tkParentesisC
+        | EXP tkMenos EXP               { $$ = Instrucciones.operacionBinaria(TipoOperacion.Resta, $1, $3); }
+        | EXP tkPor EXP                 { $$ = Instrucciones.operacionBinaria(TipoOperacion.Multiplicacion, $1, $3); }
+        | EXP tkDivision EXP            { $$ = Instrucciones.operacionBinaria(TipoOperacion.Division, $1, $3); }
+        | EXP tkPotencia EXP            { $$ = Instrucciones.operacionBinaria(TipoOperacion.Potencia, $1, $3); }
+        | EXP tkPorcentaje EXP          { $$ = Instrucciones.operacionBinaria(TipoOperacion.Porcentaje, $1, $3); }
+        | tkMenos EXP %prec UMENOS      { $$ = Instrucciones.operacionUnaria(TipoOperacion.NegacionUaria, $2); }
+        | tkNumero                      { $$ = Instrucciones.nuevoValor(TipoValor.Numero, Number($1),this._$.first_line,this._$.first_column+1); } //yylloc.first_line,yylloc.first_column
+        | tkDecimal                     { $$ = Instrucciones.nuevoValor(TipoValor.Decimal, Number($1),this._$.first_line,this._$.first_column+1); } //this._$.first_line, this._$.first_column+1
+        | tkCadena                      { $$ = Instrucciones.nuevoValor(TipoValor.Cadena, $1,this._$.first_line,this._$.first_column+1); }
+        | tkCaracter                    { $$ = Instrucciones.nuevoValor(TipoValor.Caracter, $1,this._$.first_line,this._$.first_column+1); }
+        | tkTrue                        { $$ = Instrucciones.nuevoValor(TipoValor.Booleano, $1,this._$.first_line,this._$.first_column+1); }
+        | tkFalse                       { $$ = Instrucciones.nuevoValor(TipoValor.Booleano, $1,this._$.first_line,this._$.first_column+1); }
+        | tkParentesisA EXP tkParentesisC   { $$ = $2; }
         | LLAMADA;

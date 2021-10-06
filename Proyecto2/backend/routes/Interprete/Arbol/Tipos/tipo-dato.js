@@ -1,9 +1,9 @@
 let TipoDato = {
-    Cadena: 'Cadena',
+    Cadena: 'String',
     Caracter: 'Caracter',
-    Numero: 'Numero',
-    Decimal: 'Decimal',
-    Booleano: 'Booleano',
+    Numero: 'Int',
+    Decimal: 'Double',
+    Booleano: 'Boolean',
     Array: 'Array'
 }
 
