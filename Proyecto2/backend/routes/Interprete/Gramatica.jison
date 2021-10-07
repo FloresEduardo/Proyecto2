@@ -124,7 +124,8 @@ SENTS_
 SENTS
     :     tkStart tkWith LLAMADA tkPuntoComa
         | tkVoid tkId tkParentesisA PARAMETROS tkParentesisC tkLlaveA F_SENTS tkLlaveC
-        | IMPRIMIR { $$ = [$1];};
+        | IMPRIMIR { $$ = [$1];}
+        | DECLARACIONES { $$ = [$1];};
 
 LLAMADA
     :     tkId LLAMADA_;
@@ -154,45 +155,45 @@ PARAMETROS_2_
         | EPS;
 
 F_SENTS
-    :     F_SENT F_SENT_    { $$ = $1.concat($2);};
+    :     F_SENT F_SENT_    { $$ = $1.concat($2); };
 
 F_SENT_
-    :     F_SENT F_SENT_        { $$ = $1.concat($2);}
+    :     F_SENT F_SENT_        { $$ = $1.concat($2); }
         | EPS   {$$ = [];};
 
 F_SENT
-    :     DECLARACIONES
+    :     DECLARACIONES     { $$ = [$1]; }
         | ASIGNACIONES
         | IF
         | WHILE
         | DO_WHILE
         | FOR
-        | IMPRIMIR          { $$ = [$1];};
+        | IMPRIMIR          { $$ = [$1]; };
 
 IMPRIMIR
-    :     tkWriteLine tkParentesisA EXP tkParentesisC tkPuntoComa      { $$ = Instrucciones.imprimir($3);};
+    :     tkWriteLine tkParentesisA EXP tkParentesisC tkPuntoComa      { $$ = Instrucciones.imprimir($3); };
 
 DECLARACIONES
-    :     TIPO L_ID ASIG tkPuntoComa;
+    :     TIPO L_ID ASIG tkPuntoComa        { $$ = Instrucciones.declaracion($1, $2, $3); };
 
 TIPO
-    :     tkString
-        | tkChar
-        | tkInt
-        | tkDouble
-        | tkBoolean
-        | tkId;
+    :     tkString      { $$ = TipoDato.Cadena; }
+        | tkChar        { $$ = TipoDato.Caracter; }
+        | tkInt         { $$ = TipoDato.Numero; }
+        | tkDouble      { $$ = TipoDato.Decimal; }
+        | tkBoolean     { $$ = TipoDato.Booleano; }
+        | tkId          { $$ = TipoValor.Identificador; };
 
 L_ID
-    :     tkId L_ID_;
+    :     tkId L_ID_ { $$ = [$1].concat($2); };
 
 L_ID_
-    :     tkComa tkId L_ID_
-        | EPS;
+    :     tkComa tkId L_ID_     { $$ = [$2].concat($3); }
+        | EPS   { $$ = []; };
 
 ASIG
-    :     tkIgual EXP
-        | EPS;
+    :     tkIgual EXP   { $$ = $2; }
+        | EPS   { $$ = undefined; };
 
 EXP
     :     EXP tkOr EXP

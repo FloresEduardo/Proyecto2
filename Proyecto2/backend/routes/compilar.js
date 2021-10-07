@@ -9,7 +9,7 @@ let ejecutar = require('./Interprete/Arbol/interprete').ejecutar;
 router.post('/', function(req, res, next) {
     let cadenaDeEntrada = req.body.entrada;
     let instrucciones =  parser.parse(cadenaDeEntrada);
-    let salida = ejecutar(instrucciones);
+    let salida = ejecutar(instrucciones, []);
     
   res.json({
     salida: salida

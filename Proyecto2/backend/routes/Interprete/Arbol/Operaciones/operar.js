@@ -17,6 +17,8 @@ function procesarExpresion(expresion, ts)
             resultado = procesarSuma(valorIzq, valorDer);
             return resultado;
         case TipoOperacion.Resta:
+            console.log(expresion.operandoIzquierdo);
+            console.log(expresion.operandoDerecho);
             valorIzq = procesarExpresion(expresion.operandoIzquierdo, ts);
             valorDer = procesarExpresion(expresion.operandoDerecho, ts);
             resultado = procesarResta(valorIzq, valorDer);

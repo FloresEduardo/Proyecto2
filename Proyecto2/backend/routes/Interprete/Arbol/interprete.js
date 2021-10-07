@@ -1,19 +1,19 @@
 let TipoInstruccion = require('./Tipos/tipo-instruccion').TipoInstruccion;
 let ejecutarImprimir = require('./Instrucciones/imprimir').ejecutarImprimir;
+let ejecutarDeclaracion = require('./Instrucciones/declaracion').ejecutarDeclaracion;
+let procesarExpresion = require('./Operaciones/operar').procesarExpresion;
+let TS = require('./tabla-simbolos').TS;
 
-
-
-function ejecutar(instrucciones){
+function ejecutar(instrucciones, tss){
     let salida = '';
-    let ts = [];
-    //console.log("entro a ejecutar");
-    //console.log(instrucciones);
+    const ts = new TS(tss);
     
     instrucciones.forEach((instruccion) => {
         
         switch(instruccion.tipo)
         {
             case TipoInstruccion.Declaracion:
+                salida += ejecutarDeclaracion(instruccion, ts);
                 break;
             case TipoInstruccion.Imprimir:
                 salida += ejecutarImprimir(instruccion, ts)
