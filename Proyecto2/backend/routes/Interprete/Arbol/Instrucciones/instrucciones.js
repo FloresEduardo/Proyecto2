@@ -30,6 +30,16 @@ let Instrucciones = {
         }
     },
 
+    ternaria: (tipo, condicion, verdadero, falso) => {
+        //let resultTernario = cond ? verdadero : falso;
+        return{
+            tipo: tipo,
+            condicion: condicion,
+            verdadero: verdadero,
+            falso: falso
+        }
+    },
+
     declaracion: (tipo, id, expresion) => {
         return {
             tipo: TipoInstruccion.Declaracion,

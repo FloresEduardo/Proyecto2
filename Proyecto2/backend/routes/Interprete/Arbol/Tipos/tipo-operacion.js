@@ -5,7 +5,7 @@ let TipoOperacion = {
     Multiplicacion: 'Multiplicacion',
     Potencia: 'Potencia',
     Porcentaje: 'Porcentaje',
-    NegacionUaria: 'NegacionUaria',
+    UnarioNegativo: 'UnarioNegativo', // - valor
     Or: 'Or',
     And: 'And',
     Mayor: 'Mayor',
@@ -13,8 +13,9 @@ let TipoOperacion = {
     Menor: 'Menor',
     MenorIgual: 'MenorIgual',
     IgualIgual: 'IgualIgual',
-    Not: 'Not',
-    NotIgual: 'NotIgual'
+    NegacionUaria: 'NegacionUaria', // ! valor
+    NotIgual: 'NotIgual',
+    Ternario: 'Ternario'
 }
 
 module.exports.TipoOperacion = TipoOperacion;

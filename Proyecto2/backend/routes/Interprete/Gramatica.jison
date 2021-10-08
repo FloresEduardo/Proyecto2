@@ -73,6 +73,7 @@
 ":"     return 'tkDosPuntos';
 ","     return 'tkComa';
 "."     return 'tkPunto';
+"?"     return 'tkInterrogacion';
 
 
 \"[^\"]*\"                      { yytext = yytext.substr(1, yyleng-2); return 'tkCadena'; }
@@ -98,8 +99,8 @@
 %right 'tkOr'
 %right 'tkAnd'
 %right 'tkNot'
-%left 'tkMenor' 'tkMenorIgual' 'tkMayor' 'tkMayorIgual' 'tkIgualIgual' 'tkNotIgual'
-%left 'tkMas' 'tkMenos'
+%left 'tkMenor' 'tkMenorIgual' 'tkMayor' 'tkMayorIgual' 'tkIgualIgual' 'tkNotIgual' 'tkInterrogacion'
+%left 'tkMas' 'tkMenos' 
 %left 'tkPor' 'tkDivision' 'tkPorcentaje'
 %left 'tkPotencia'
 %left UMENOS
@@ -125,6 +126,7 @@ SENTS
     :     tkStart tkWith LLAMADA tkPuntoComa
         | tkVoid tkId tkParentesisA PARAMETROS tkParentesisC tkLlaveA F_SENTS tkLlaveC
         | IMPRIMIR { $$ = [$1];}
+        | IF { $$ = [$1];}
         | DECLARACIONES { $$ = [$1];};
 
 LLAMADA
@@ -170,6 +172,8 @@ F_SENT
         | FOR
         | IMPRIMIR          { $$ = [$1]; };
 
+IF:       tkIf tkParentesisA EXP tkParentesisC tkLlaveA F_SENTS tkLlaveC;
+
 IMPRIMIR
     :     tkWriteLine tkParentesisA EXP tkParentesisC tkPuntoComa      { $$ = Instrucciones.imprimir($3); };
 
@@ -196,22 +200,23 @@ ASIG
         | EPS   { $$ = undefined; };
 
 EXP
-    :     EXP tkOr EXP
-        | EXP tkAnd EXP
-        | tkNot EXP
-        | EXP tkIgualIgual EXP
-        | EXP tkNotIgual EXP
-        | EXP tkMenor EXP
-        | EXP tkMenorIgual EXP
-        | EXP tkMayor EXP
-        | EXP tkMayorIgual EXP
+    :     EXP tkOr EXP                  { $$ = Instrucciones.operacionBinaria(TipoOperacion.Or, $1, $3); }
+        | EXP tkAnd EXP                 { $$ = Instrucciones.operacionBinaria(TipoOperacion.And, $1, $3); }
+        | tkNot EXP %prec UMENOS        { $$ = Instrucciones.operacionUnaria(TipoOperacion.NegacionUaria, $2); }
+        | EXP tkInterrogacion EXP tkDosPuntos EXP  { $$ = Instrucciones.ternaria(TipoOperacion.Ternario, $1, $3, $5); }
+        | EXP tkIgualIgual EXP          { $$ = Instrucciones.operacionBinaria(TipoOperacion.IgualIgual, $1, $3); }
+        | EXP tkNotIgual EXP            { $$ = Instrucciones.operacionBinaria(TipoOperacion.NotIgual, $1, $3); }
+        | EXP tkMenor EXP               { $$ = Instrucciones.operacionBinaria(TipoOperacion.Menor, $1, $3); }
+        | EXP tkMenorIgual EXP          { $$ = Instrucciones.operacionBinaria(TipoOperacion.MenorIgual, $1, $3); }
+        | EXP tkMayor EXP               { $$ = Instrucciones.operacionBinaria(TipoOperacion.Mayor, $1, $3); }
+        | EXP tkMayorIgual EXP          { $$ = Instrucciones.operacionBinaria(TipoOperacion.MayorIgual, $1, $3); }
         | EXP tkMas EXP                 { $$ = Instrucciones.operacionBinaria(TipoOperacion.Suma, $1, $3); }
         | EXP tkMenos EXP               { $$ = Instrucciones.operacionBinaria(TipoOperacion.Resta, $1, $3); }
         | EXP tkPor EXP                 { $$ = Instrucciones.operacionBinaria(TipoOperacion.Multiplicacion, $1, $3); }
         | EXP tkDivision EXP            { $$ = Instrucciones.operacionBinaria(TipoOperacion.Division, $1, $3); }
         | EXP tkPotencia EXP            { $$ = Instrucciones.operacionBinaria(TipoOperacion.Potencia, $1, $3); }
         | EXP tkPorcentaje EXP          { $$ = Instrucciones.operacionBinaria(TipoOperacion.Porcentaje, $1, $3); }
-        | tkMenos EXP %prec UMENOS      { $$ = Instrucciones.operacionUnaria(TipoOperacion.NegacionUaria, $2); }
+        | tkMenos EXP %prec UMENOS      { $$ = Instrucciones.operacionUnaria(TipoOperacion.UnarioNegativo, $2); }
         | tkNumero                      { $$ = Instrucciones.nuevoValor(TipoValor.Numero, Number($1),this._$.first_line,this._$.first_column+1); } //yylloc.first_line,yylloc.first_column
         | tkDecimal                     { $$ = Instrucciones.nuevoValor(TipoValor.Decimal, Number($1),this._$.first_line,this._$.first_column+1); } //this._$.first_line, this._$.first_column+1
         | tkCadena                      { $$ = Instrucciones.nuevoValor(TipoValor.Cadena, $1,this._$.first_line,this._$.first_column+1); }
