@@ -3,17 +3,18 @@ let TipoDato = require('../Tipos/tipo-dato').TipoDato;
 
 function ejecutarDeclaracion(instruccion, ts)
 {
-    let salida = "";
+    let salida;
+    let respuestaTS;
     if(instruccion.expresion != undefined)
     {
         let valor = procesarExpresion(instruccion.expresion, ts);
         if(instruccion.id.length > 1)
         {
             instruccion.id.forEach(id => {
-                salida += ts.agregar(instruccion.tipo_dato, id, valor);
+                salida = ts.agregar(instruccion.tipo_dato, id, valor);
             });
         }else{  
-            salida += ts.agregar(instruccion.tipo_dato, instruccion.id, valor);    
+            salida = ts.agregar(instruccion.tipo_dato, instruccion.id, valor);    
         } 
     }else{
         let valor;
@@ -53,10 +54,10 @@ function ejecutarDeclaracion(instruccion, ts)
         if(instruccion.id.length > 1)
         {
             instruccion.id.forEach(id => {
-                salida += ts.agregar(instruccion.tipo_dato, id, valor);
+                salida = ts.agregar(instruccion.tipo_dato, id, valor);
             });
         }else{  
-            salida += ts.agregar(instruccion.tipo_dato, instruccion.id, valor);    
+            salida = ts.agregar(instruccion.tipo_dato, instruccion.id, valor);    
         }
     }
     return salida;

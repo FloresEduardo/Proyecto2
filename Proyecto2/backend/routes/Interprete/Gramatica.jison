@@ -98,8 +98,8 @@
 
 %right 'tkOr'
 %right 'tkAnd'
-%right 'tkNot'
-%left 'tkMenor' 'tkMenorIgual' 'tkMayor' 'tkMayorIgual' 'tkIgualIgual' 'tkNotIgual' 'tkInterrogacion'
+%right 'tkNot' 'tkInterrogacion'
+%left 'tkMenor' 'tkMenorIgual' 'tkMayor' 'tkMayorIgual' 'tkIgualIgual' 'tkNotIgual' 
 %left 'tkMas' 'tkMenos' 
 %left 'tkPor' 'tkDivision' 'tkPorcentaje'
 %left 'tkPotencia'
@@ -126,7 +126,7 @@ SENTS
     :     tkStart tkWith LLAMADA tkPuntoComa
         | tkVoid tkId tkParentesisA PARAMETROS tkParentesisC tkLlaveA F_SENTS tkLlaveC
         | IMPRIMIR { $$ = [$1];}
-        | IF { $$ = [$1];}
+        | IF { $$ = $1;}
         | DECLARACIONES { $$ = [$1];};
 
 LLAMADA
@@ -166,13 +166,20 @@ F_SENT_
 F_SENT
     :     DECLARACIONES     { $$ = [$1]; }
         | ASIGNACIONES
-        | IF
+        | IF                { $$ = $1; }
         | WHILE
         | DO_WHILE
         | FOR
         | IMPRIMIR          { $$ = [$1]; };
 
-IF:       tkIf tkParentesisA EXP tkParentesisC tkLlaveA F_SENTS tkLlaveC;
+IF:       tkIf tkParentesisA EXP tkParentesisC tkLlaveA F_SENTS tkLlaveC ELSE 
+            { $$ = [Instrucciones.sentenciaIf($3, $6, $8)]; };
+
+ELSE:     tkElse ELIF   {   $$ = $2;   }
+        | EPS   {$$ = [];};
+
+ELIF:     IF    {   $$ = $1;   }
+        | tkLlaveA F_SENTS tkLlaveC    {   $$ = $2;   };
 
 IMPRIMIR
     :     tkWriteLine tkParentesisA EXP tkParentesisC tkPuntoComa      { $$ = Instrucciones.imprimir($3); };

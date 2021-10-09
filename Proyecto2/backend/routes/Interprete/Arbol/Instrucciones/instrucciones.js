@@ -54,6 +54,15 @@ let Instrucciones = {
             tipo: TipoInstruccion.Imprimir,
             expresion: expresion
         }
+    },
+
+    sentenciaIf: (expresion, cuerpoIf, cuerpoElse)=> {
+        return{
+            tipo: TipoInstruccion.If,
+            expresion: expresion,
+            cuerpoIf: cuerpoIf,
+            cuerpoElse: cuerpoElse
+        }
     }
 }
 

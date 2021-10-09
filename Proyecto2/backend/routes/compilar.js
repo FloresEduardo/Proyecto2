@@ -10,9 +10,9 @@ router.post('/', function(req, res, next) {
     let cadenaDeEntrada = req.body.entrada;
     let instrucciones =  parser.parse(cadenaDeEntrada);
     let salida = ejecutar(instrucciones, []);
-    
+    //console.log(salida);
   res.json({
-    salida: salida
+    salida
   });
 });
 

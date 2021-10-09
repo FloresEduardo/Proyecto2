@@ -9,13 +9,14 @@ class TS
 
     agregar(tipo, id, valor)
     {
-        console.log(id);
         var simbolo = this._simbolos.filter((simbolo) => simbolo.id == id);
         if(simbolo.length)
         {
             // La variable ya existe
-            console.log(`La variable ${id} ya existe`);
-            return `La variable ${id} ya existe`;
+            return {
+                error: 'Error Semantico',
+                valor: `La variable '${id}'' ya existe \n`
+            }
         }
         else{
             // Casteo Implicito
@@ -26,7 +27,10 @@ class TS
                     id: id,
                     valor: valor.valor
                 });
-                return;
+                return{
+                    error: undefined,
+                    valor: `Variable '${id}' agregada exitosamente a TS \n`
+                }
             }
             else{
                 // Seccion de casteos
@@ -41,13 +45,16 @@ class TS
                                 id: id,
                                 valor: valorAscii
                             });
-                            console.log(`${tipo} ${id} = ${valorAscii}`);
-                            return;
+                            return{
+                                error: undefined,
+                                valor: `Variable '${id}' agregada exitosamente a TS \n`
+                            };
                         }else{
-                            console.log(`Error semantico, variable: '${id}' es de tipo: '${tipo}', incompatible con valor: '${valor.valor}' de tipo: '${valor.tipo}'`);
-                            return `Error semantico, variable: '${id}' es de tipo: '${tipo}', incompatible con valor: '${valor.valor}' de tipo: '${valor.tipo}'`;
+                            return {
+                                error: 'Error Semantico',
+                                valor: `Variable: '${id}' es de tipo: '${tipo}', incompatible con valor: '${valor.valor}' de tipo: '${valor.tipo}' \n`
+                            }
                         }
-                        break;
                     case TipoDato.Caracter:     // char x = 97; -> char x = 'a';
                         if(valor.tipo == TipoDato.Numero)
                         {
@@ -57,14 +64,22 @@ class TS
                                 id: id,
                                 valor: valorInt
                             });
+                            return{
+                                error: undefined,
+                                valor: `Variable '${id}' agregada exitosamente a TS \n`
+                            };
                         }else{
-                            console.log(`Error semantico, variable: '${id}' es de tipo: '${tipo}', incompatible con valor: '${valor.valor}' de tipo: '${valor.tipo}'`);
-                            return `Error semantico, variable: '${id}' es de tipo: '${tipo}', incompatible con valor: '${valor.valor}' de tipo: '${valor.tipo}'`;
+                            return {
+                                error: 'Error Semantico',
+                                valor: `Variable: '${id}' es de tipo: '${tipo}', incompatible con valor: '${valor.valor}' de tipo: '${valor.tipo}' \n`
+                            }
                         }
-                        break;
                     default:
-                        console.log(`Error semantico, variable: '${id}' es de tipo: '${tipo}', incompatible con valor: '${valor.valor}' de tipo: '${valor.tipo}'`);
-                        return `Error semantico, variable: '${id}' es de tipo: '${tipo}', incompatible con valor: '${valor.valor}' de tipo: '${valor.tipo}'`;
+                        
+                        return {
+                            error: 'Error Semantico',
+                            valor: `Variable: '${id}' es de tipo: '${tipo}', incompatible con valor: '${valor.valor}' de tipo: '${valor.tipo}' \n`
+                        }
                         //break;
                 }
             }
