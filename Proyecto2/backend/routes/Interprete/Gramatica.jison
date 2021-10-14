@@ -16,7 +16,7 @@
 "string"                return 'tkString';
 "char"                  return 'tkChar';
 "new"                   return 'tkNew';
-"DynamicLis"            return 'tkDynamicList';
+"DynamicList"           return 'tkDynamicList';
 "append"                return 'tkAppend';
 "getValue"              return 'tkGetValue';
 "setValue"              return 'tkSetValue';
@@ -126,24 +126,26 @@ SENTS
     :     tkStart tkWith LLAMADA tkPuntoComa
         | tkVoid tkId tkParentesisA PARAMETROS tkParentesisC tkLlaveA F_SENTS tkLlaveC
         | IMPRIMIR { $$ = [$1];}
-        | IF { $$ = $1;}
-        | DECLARACIONES { $$ = [$1];};
+        | IF { $$ = [$1];}
+        | DECLARACIONES { $$ = [$1];}
+        | ASIGNACIONES { $$ = [$1];}
+        | WHILE { $$ = [$1];};
 
 LLAMADA
-    :     tkId LLAMADA_;
+    :     tkId LLAMADA_ { $$ = [Instrucciones.nuevoValor(TipoValor.Identificador, $1,this._$.first_line,this._$.first_column+1)].concat($2); };
 
 LLAMADA_
-    :     tkPunto tkId LLAMADA_
-        | tkParentesisA PARAMETROS_SIN tkParentesisC
-        | EPS;
+    :     tkPunto tkId LLAMADA_ { $$ = $2.concat($3); }
+        | tkParentesisA PARAMETROS_SIN tkParentesisC { $$ = $2; }
+        | EPS {$$ = [];};
 
 PARAMETROS_SIN
-    :     EXP PARAMETROS_SIN_
-        | EPS;
+    :     EXP PARAMETROS_SIN_ { $$ = [$2].concat($3); }
+        | EPS {$$ = [];};
 
 PARAMETROS_SIN_
-    :     tkComa EXP PARAMETROS_SIN_
-        | EPS;
+    :     tkComa EXP PARAMETROS_SIN_ { $$ = [$2].concat($3); }
+        | EPS {$$ = [];};
 
 PARAMETROS
     :     PARAMETROS_2
@@ -165,15 +167,27 @@ F_SENT_
 
 F_SENT
     :     DECLARACIONES     { $$ = [$1]; }
-        | ASIGNACIONES
-        | IF                { $$ = $1; }
-        | WHILE
+        | ASIGNACIONES      { $$ = [$1]; }
+        | IF                { $$ = [$1]; }
+        | WHILE             { $$ = [$1]; }
         | DO_WHILE
         | FOR
         | IMPRIMIR          { $$ = [$1]; };
 
+ASIGNACIONES
+    :     tkId ASIG tkPuntoComa
+        | tkId tkMas tkMas tkPuntoComa
+        | tkId tkMenos tkMenos tkPuntoComa
+        | tkAppend tkParentesisA tkId EXP tkParentesisC tkPuntoComa;
+
+
+
+WHILE
+    :     tkWhile tkParentesisA EXP tkParentesisC tkLlaveA tk F_SENTS tkLlaveC
+            { $$ = Instrucciones.sentenciaWhile($3, $6); };
+
 IF:       tkIf tkParentesisA EXP tkParentesisC tkLlaveA F_SENTS tkLlaveC ELSE 
-            { $$ = [Instrucciones.sentenciaIf($3, $6, $8)]; };
+            { $$ = Instrucciones.sentenciaIf($3, $6, $8); };
 
 ELSE:     tkElse ELIF   {   $$ = $2;   }
         | EPS   {$$ = [];};
@@ -185,15 +199,20 @@ IMPRIMIR
     :     tkWriteLine tkParentesisA EXP tkParentesisC tkPuntoComa      { $$ = Instrucciones.imprimir($3); };
 
 DECLARACIONES
-    :     TIPO L_ID ASIG tkPuntoComa        { $$ = Instrucciones.declaracion($1, $2, $3); };
+    :     TIPO L_ID ASIG tkPuntoComa        { $$ = Instrucciones.declaracion($1, $2, $3); }
+        | TIPO L_ID tkCorcheteA tkCorcheteC tkIgual tkNew TIPO tkCorcheteA EXP tkCorcheteC tkPuntoComa
+            { $$ = Instrucciones.declaracion_array1($1, $2, $7, $9); }
+        | TIPO L_ID tkCorcheteA tkCorcheteC tkIgual tkLlaveA L_EXP tkLlaveC tkPuntoComa
+            { $$ = Instrucciones.declaracion_array2($1, $2, $7); }
+        | tkDynamicList tkMenor TIPO tkMayor L_ID tkIgual tkNew tkDynamicList tkMenor TIPO tkMayor tkPuntoComa
+            { $$ = Instrucciones.declaracion_dynamicList($3, $5, $10); };
 
 TIPO
     :     tkString      { $$ = TipoDato.Cadena; }
         | tkChar        { $$ = TipoDato.Caracter; }
         | tkInt         { $$ = TipoDato.Numero; }
         | tkDouble      { $$ = TipoDato.Decimal; }
-        | tkBoolean     { $$ = TipoDato.Booleano; }
-        | tkId          { $$ = TipoValor.Identificador; };
+        | tkBoolean     { $$ = TipoDato.Booleano; };
 
 L_ID
     :     tkId L_ID_ { $$ = [$1].concat($2); };
@@ -204,7 +223,29 @@ L_ID_
 
 ASIG
     :     tkIgual EXP   { $$ = $2; }
+        //| tkIgual tkToString tkParentesisA EXP tkParentesisC { $$ = $4.concat(TipoDato.Cadena); }
         | EPS   { $$ = undefined; };
+
+/*ASIG
+    :     tkIgual ASIG_   { $$ = $2; }
+        | EPS   { $$ = undefined; };
+
+ASIG_  
+    :     EXP { $$ = $1; }
+        | tkToString EXP { $$ = $3.concat(TipoDato.Cadena); }
+        | tkParentesisA TIPO tkParentesisC EXP { $$ = $4.concat($2); };
+*/
+
+/*CASTEOS
+    :     tkParentesisA TIPO tkParentesisC { $$ = $2; }
+        | EPS { $$ = []; };*/
+
+L_EXP
+    :     EXP L_EXP_ { $$ = [$1].concat($2); };
+
+L_EXP_
+    :     tkComa EXP L_EXP_ { $$ = [$2].concat($3); }
+        | EPS { $$ = []; };
 
 EXP
     :     EXP tkOr EXP                  { $$ = Instrucciones.operacionBinaria(TipoOperacion.Or, $1, $3); }
@@ -228,7 +269,9 @@ EXP
         | tkDecimal                     { $$ = Instrucciones.nuevoValor(TipoValor.Decimal, Number($1),this._$.first_line,this._$.first_column+1); } //this._$.first_line, this._$.first_column+1
         | tkCadena                      { $$ = Instrucciones.nuevoValor(TipoValor.Cadena, $1,this._$.first_line,this._$.first_column+1); }
         | tkCaracter                    { $$ = Instrucciones.nuevoValor(TipoValor.Caracter, $1,this._$.first_line,this._$.first_column+1); }
-        | tkTrue                        { $$ = Instrucciones.nuevoValor(TipoValor.Booleano, $1,this._$.first_line,this._$.first_column+1); }
-        | tkFalse                       { $$ = Instrucciones.nuevoValor(TipoValor.Booleano, $1,this._$.first_line,this._$.first_column+1); }
+        | tkTrue                        { $$ = Instrucciones.nuevoValor(TipoValor.Booleano, true,this._$.first_line,this._$.first_column+1); }
+        | tkFalse                       { $$ = Instrucciones.nuevoValor(TipoValor.Booleano, false,this._$.first_line,this._$.first_column+1); }
         | tkParentesisA EXP tkParentesisC   { $$ = $2; }
-        | LLAMADA;
+        | tkToString tkParentesisA EXP tkParentesisC  { $$ = Instrucciones.operacionCasteo(TipoDato.Cadena, $3); }
+        | tkParentesisA TIPO tkParentesisC EXP %prec UMENOS { $$ = Instrucciones.operacionCasteo($2, $4); }
+        | LLAMADA                       { $$ = $1; };

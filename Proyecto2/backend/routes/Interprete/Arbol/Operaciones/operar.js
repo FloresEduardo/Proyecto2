@@ -6,9 +6,15 @@ function procesarExpresion(expresion, ts)
 {
     //if(expresion.error){    return expresion;   }
     //console.log(expresion.tipo);
+    let respuesta = [];
     let valorIzq;
     let valorDer;
     let resultado;
+    //console.log(typeof(expresion));
+
+    //expresiones.forEach(expresion => {  //  NUEVO FOR EACH, TEST
+        
+    
     switch(expresion.tipo){
         case TipoOperacion.Suma:
             valorIzq = procesarExpresion(expresion.operandoIzquierdo, ts);
@@ -145,6 +151,10 @@ function procesarExpresion(expresion, ts)
             console.log(resultado);
             return resultado;
 
+        case TipoOperacion.Casteo:
+            let valor = casteo(expresion.tipoCasteo, expresion.expresion);
+            return { tipo: valor.tipo, valor: valor.valor, linea: expresion.expresion.linea, columna: expresion.expresion.columna}
+
         case TipoValor.Booleano:
             return { tipo: TipoDato.Booleano, valor: expresion.valor, linea: expresion.linea, columna: expresion.columna}
         case TipoValor.Cadena:
@@ -154,10 +164,16 @@ function procesarExpresion(expresion, ts)
         case TipoValor.Decimal:
             return { tipo: TipoDato.Decimal, valor: expresion.valor, linea: expresion.linea, columna: expresion.columna}
         case TipoValor.Numero:
+            console.log(TipoDato.Numero);
+            console.log(expresion.valor);
             return { tipo: TipoDato.Numero, valor: expresion.valor, linea: expresion.linea, columna: expresion.columna}
         case TipoValor.Identificador:
+
             break;
     }
+
+    //}); // ------- NUEVO FOR EACH, TEST
+    //return respuesta;
 }
 
 function procesarSuma(valorIzq, valorDer){
@@ -1791,9 +1807,87 @@ function procesarIgualDif(valorIzq, valorDer, sig){
 }
 
 
+function casteo(tipo, expresion) {
+    let valor;
+    switch(tipo)
+    {
+        case TipoDato.Numero:
+            switch(expresion.tipo)
+            {
+                case TipoDato.Decimal:
+                    valor = parseInt(expresion.valor);
+                    expresion.valor = valor;
+                    expresion.tipo = TipoDato.Numero;
+                    return expresion;
+                case TipoDato.Caracter:
+                    valor = getValueByCaracter(expresion.valor);
+                    expresion.valor = valor;
+                    expresion.tipo = TipoDato.Numero;
+                    return expresion;
+                default:
+                    break;
+            }
+            break;
+        case TipoDato.Decimal:
+            switch(expresion.tipo)
+            {
+                case TipoDato.Numero:
+                    valor = expresion.valor.toFixed(1);
+                    expresion.valor = valor;
+                    expresion.tipo = TipoDato.Decimal;
+                    return expresion;
+                case TipoDato.Caracter:
+                    valor = (getValueByCaracter(expresion.valor)).toFixed(1);
+                    expresion.valor = valor;
+                    expresion.tipo = TipoDato.Decimal;
+                    return expresion;
+                default:
+                    break;
+            }
+            break;
+        case TipoDato.Cadena:
+            switch(expresion.tipo)
+            {
+                case TipoDato.Numero:
+                    valor = String(expresion.valor);
+                    expresion.valor = valor;
+                    expresion.tipo = TipoDato.Cadena;
+                    return expresion;
+                case TipoDato.Decimal:
+                    valor = String(expresion.valor.toFixed(1));
+                    expresion.valor = valor;
+                    expresion.tipo = TipoDato.Cadena;
+                    return expresion;
+                case TipoDato.Booleano:
+                    valor = String(expresion.valor);
+                    expresion.valor = valor;
+                    expresion.tipo = TipoDato.Cadena;
+                    return expresion;
+                default:
+                    break;
+            }
+            break;
+        case TipoDato.Caracter:
+            switch(expresion.tipo)
+            {
+                case TipoDato.Numero:
+                    valor = String.fromCharCode(expresion.valor);
+                    expresion.valor = valor;
+                    expresion.tipo = TipoDato.Caracter;
+                    return expresion;
+                default:
+                    break;
+            }
+            break;
+    }
+    return '';
+}
+
+
 function getValueByCaracter(caracter)
 {
     return caracter.charCodeAt(0);
 }
 
 module.exports.procesarExpresion = procesarExpresion;
+module.exports.casteo = casteo;

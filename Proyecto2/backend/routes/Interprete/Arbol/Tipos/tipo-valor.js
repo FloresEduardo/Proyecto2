@@ -1,9 +1,9 @@
 let TipoValor = {
-    Cadena: 'Cadena',
-    Caracter: 'Caracter',
-    Numero: 'Numero',
-    Decimal: 'Decimal',
-    Booleano: 'Booleano',
+    Cadena: 'String',
+    Caracter: 'Char',
+    Numero: 'Int',
+    Decimal: 'Double',
+    Booleano: 'Boolean',
     Identificador: 'Identificador'
 }
 

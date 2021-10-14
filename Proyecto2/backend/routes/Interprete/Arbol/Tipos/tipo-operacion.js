@@ -15,7 +15,8 @@ let TipoOperacion = {
     IgualIgual: 'IgualIgual',
     NegacionUaria: 'NegacionUaria', // ! valor
     NotIgual: 'NotIgual',
-    Ternario: 'Ternario'
+    Ternario: 'Ternario',
+    Casteo: 'Casteo'
 }
 
 module.exports.TipoOperacion = TipoOperacion;

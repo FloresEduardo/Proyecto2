@@ -1,10 +1,12 @@
 let TipoDato = {
     Cadena: 'String',
-    Caracter: 'Caracter',
+    Caracter: 'Char',
     Numero: 'Int',
     Decimal: 'Double',
     Booleano: 'Boolean',
-    Array: 'Array'
+    Vector: 'Vector',
+    Lista: 'Lista',
+    ListaDynamic: 'ListaDynamic'
 }
 
 module.exports.TipoDato = TipoDato;

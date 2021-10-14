@@ -1,6 +1,7 @@
 let TipoInstruccion = require('./Tipos/tipo-instruccion').TipoInstruccion;
 let ejecutarImprimir = require('./Instrucciones/imprimir').ejecutarImprimir;
 let ejecutarDeclaracion = require('./Instrucciones/declaracion').ejecutarDeclaracion;
+let ejecutarDeclaracionArray = require('./Instrucciones/declaracion').ejecutarDeclaracionArray;
 let procesarExpresion = require('./Operaciones/operar').procesarExpresion;
 //let ejecutarIf = require('./Instrucciones/sentencia-if').ejecutarIf;
 let TS = require('./tabla-simbolos').TS;
@@ -19,7 +20,7 @@ function ejecutar(instrucciones, tss){
                 valor = ejecutarDeclaracion(instruccion, ts);
                 //console.log(valor);
                 valor.error != undefined ? (salida.error += valor.error) : '';
-                salida.valor += String(valor.valor) + "\n";
+                //salida.valor += String(valor.valor) + "\n";
                 
                 console.log(salida);
                 break;
@@ -35,6 +36,8 @@ function ejecutar(instrucciones, tss){
                 salida.valor += String(valor.valor) + "\n";
                 console.log(salida);
                 break;
+            case TipoInstruccion.While:
+                valor = ejecutarWhile(instruccion, ts);
         }
     });
     return salida;
@@ -43,9 +46,9 @@ function ejecutar(instrucciones, tss){
 function ejecutarIf(instruccion, ts)
 {
     let valor = procesarExpresion(instruccion.expresion, ts);
-    let salidaL = valor;
+    let salidaL;
     //console.log(salida);
-    if(valor.valor == 'true')
+    if(valor.valor)
     {
         salidaL = ejecutar(instruccion.cuerpoIf, ts);
     }
@@ -55,6 +58,15 @@ function ejecutarIf(instruccion, ts)
         salidaL = ejecutar(instruccion.cuerpoElse, ts);
     }
     return salidaL;
+}
+
+function ejecutarWhile(instruccion, ts)
+{
+    let valor = procesarExpresion(instruccion.expresion, ts);
+    while(valor.valor)
+    {
+        const tsWhile = new TS(ts.simbolos)
+    }
 }
 
 module.exports.ejecutar = ejecutar;

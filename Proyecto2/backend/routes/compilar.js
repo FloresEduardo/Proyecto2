@@ -7,6 +7,11 @@ let ejecutar = require('./Interprete/Arbol/interprete').ejecutar;
 
 /* GET users listing. */
 router.post('/', function(req, res, next) {
+  //let bool = true;
+  //let int = 2;
+  //let dou = 1.0;
+
+  //console.log(String(bool) + String(int) + String(dou.toFixed(1)));
     let cadenaDeEntrada = req.body.entrada;
     let instrucciones =  parser.parse(cadenaDeEntrada);
     let salida = ejecutar(instrucciones, []);
